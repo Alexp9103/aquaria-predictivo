@@ -1,0 +1,12 @@
+[phases.setup]
+nixPkgs = ["git-lfs", "python310"]
+
+[phases.install]
+cmds = [
+    "git lfs install",
+    "git lfs pull",
+    "pip install -r requirements.txt"
+]
+
+[start]
+cmd = "bash start.sh"
