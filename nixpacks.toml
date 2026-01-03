@@ -1,12 +1,13 @@
 [phases.setup]
-nixPkgs = ["git-lfs", "python310"]
+nixPkgs = ["git-lfs", "python311"] # Cambiado a 3.11 para coincidir con tu venv311
 
 [phases.install]
 cmds = [
     "git lfs install",
     "git lfs pull",
+    "pip install --upgrade pip",
     "pip install -r requirements.txt"
 ]
 
 [start]
-cmd = "bash start.sh"
+cmd = "streamlit run app-mejorada-debug.py --server.port $PORT --server.address 0.0.0.0"
