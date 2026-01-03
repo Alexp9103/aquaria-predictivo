@@ -15,9 +15,9 @@ __pycache__/
 .Python
 
 # Datos grandes
-datos_meteo/
-formatoadecuado/
-*.csv
+#datos_meteo/
+#formatoadecuado/
+#*.csv
 *.xlsx
 datooriginal
 SANTIAGO1 - Copy
