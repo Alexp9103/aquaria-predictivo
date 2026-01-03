@@ -1,0 +1,2 @@
+formatoadecuado/*.csv filter=lfs diff=lfs merge=lfs -text
+datos_meteo/*.csv filter=lfs diff=lfs merge=lfs -text
