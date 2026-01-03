@@ -1,0 +1,28 @@
+# Entornos virtuales
+venv/
+venv_*/
+venv311
+env/
+*.env
+
+# Python
+__pycache__/
+*.py[cod]
+*.so
+.Python
+
+# Datos grandes
+datos_meteo/
+formatoadecuado/
+*.csv
+*.xlsx
+datooriginal
+SANTIAGO1 - Copy
+
+# IDE
+.vscode/
+.idea/
+
+# Modelos pesados (opcional)
+*.h5
+*.pkl

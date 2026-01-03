@@ -1,0 +1,59 @@
+{
+  "timestamp": "2025-09-28 21:00:34.575133",
+  "model_config": {
+    "lstm_weight": 0.9500000000000001,
+    "sarimax_weight": 0.04999999999999993,
+    "sarimax_order": [
+      [
+        2,
+        1,
+        2
+      ],
+      [
+        0,
+        1,
+        1,
+        52
+      ]
+    ],
+    "sequence_length": 26,
+    "features_count": 12
+  },
+  "performance_metrics": {
+    "mae": 16.288116354374996,
+    "rmse": 20.91979463581259,
+    "mape": 168.1588754324824,
+    "combined_score": 13.75882938693498
+  },
+  "additional_metrics": {
+    "mase": 0.6981387694119515,
+    "coverage": 0.9320987654320988,
+    "variability_ratio": 0.1811582345675709
+  },
+  "predictions_next_month": {
+    "dates": [
+      "2026-01-11",
+      "2026-01-18",
+      "2026-01-25",
+      "2026-02-01"
+    ],
+    "values": [
+      10.8,
+      10.6,
+      10.5,
+      11.1
+    ],
+    "ci_lower": [
+      8.3,
+      8.1,
+      7.9,
+      8.5
+    ],
+    "ci_upper": [
+      13.3,
+      13.1,
+      13.1,
+      13.7
+    ]
+  }
+}

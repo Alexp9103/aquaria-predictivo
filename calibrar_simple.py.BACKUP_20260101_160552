@@ -1,0 +1,106 @@
+"""
+Calibración post-modelo AQUARIA (VERSIÓN SIMPLE Y CORRECTA)
+- Corrección ADITIVA estratificada
+- Basada en análisis de sesgo por nivel
+- Fácil de entender y mantener
+"""
+
+import pickle
+import numpy as np
+from pathlib import Path
+
+# ============================================================
+# SESGOS OBSERVADOS POR NIVEL (mm)
+# ============================================================
+
+SESGOS_ESTRATIFICADOS = {
+    'grupo_1_norte_cibao': {
+        'muy_bajo': +17.12,
+        'bajo':     +9.65,
+        'medio':    -0.27,
+        'alto':     -16.32,
+        'muy_alto': -66.89
+    },
+    'grupo_2_sur_seco': {
+        'muy_bajo': +4.82,
+        'bajo':     -0.23,
+        'medio':    -11.80,
+        'alto':     -33.98,
+        'muy_alto': -61.36
+    },
+    'grupo_3_este_capital': {
+        'muy_bajo': +10.29,
+        'bajo':     +8.11,
+        'medio':    -0.19,
+        'alto':     -15.20,
+        'muy_alto': -60.33
+    }
+}
+
+UMBRALES = {
+    'muy_bajo': (0, 5),
+    'bajo': (5, 15),
+    'medio': (15, 30),
+    'alto': (30, 60),
+    'muy_alto': (60, float('inf'))
+}
+
+def crear_calibrador(nombre_grupo, sesgos_estratificados):
+    """Crea objeto calibrador listo para guardar (SIN FUNCIONES)"""
+    calibrador = {
+        'grupo': nombre_grupo,
+        'sesgos': sesgos_estratificados,
+        'umbrales': UMBRALES,
+        'configuraciones': {
+            'conservador': {
+                'agresividad': 0.3,
+                'factor_variabilidad': 1.1,
+                'descripcion': 'Mínima corrección. Para alertas (mejor sobre-predecir)'
+            },
+            'balanceado': {
+                'agresividad': 0.5,
+                'factor_variabilidad': 1.2,
+                'descripcion': 'Balance MAE vs Variabilidad (recomendado)'
+            },
+            'agresivo': {
+                'agresividad': 0.7,
+                'factor_variabilidad': 1.25,
+                'descripcion': 'Máxima corrección de sesgo'
+            }
+        },
+        'version': '2.0_estratificado',
+        'descripcion': (
+            "Calibrador estratificado por nivel de precipitación.\n"
+            "Corrige sesgo observado en validación sin destruir la estructura del modelo."
+        )
+    }
+    return calibrador
+
+def main():
+    print("=" * 70)
+    print("🔧 CALIBRACIÓN ESTRATIFICADA – AQUARIA")
+    print("=" * 70)
+    
+    Path("modelos").mkdir(exist_ok=True)
+    
+    for grupo, sesgos in SESGOS_ESTRATIFICADOS.items():
+        print(f"\n📦 Procesando: {grupo}")
+        print(f"   Sesgos por nivel:")
+        for nivel, sesgo in sesgos.items():
+            signo = "📈" if sesgo > 0 else "📉"
+            print(f"      {signo} {nivel:12s}: {sesgo:+7.2f} mm")
+        
+        calibrador = crear_calibrador(grupo, sesgos)
+        
+        filename = f"modelos/calibrador_{grupo}.pkl"
+        with open(filename, "wb") as f:
+            pickle.dump(calibrador, f)
+        
+        print(f"   ✅ Guardado: {filename}")
+    
+    print("\n" + "=" * 70)
+    print("✅ Calibración completada")
+    print("=" * 70)
+
+if __name__ == "__main__":
+    main()
