@@ -1,3 +1,8 @@
+
+from descargar_modelos import descargar_modelos
+
+descargar_modelos()
+
 from fpdf import FPDF
 import base64
 from io import BytesIO
