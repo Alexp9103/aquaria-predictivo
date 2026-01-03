@@ -13,11 +13,17 @@ import tensorflow as tf
 from tensorflow import keras
 import pickle
 
+import os
+
 np.random.seed(42)
 tf.random.set_seed(42)
 
-CARPETA_DATOS = '/home/juanpucmm/modelo predectivo/formatoadecuado'
-CARPETA_METEO = 'datos_meteo'
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+CARPETA_DATOS = os.path.join(BASE_DIR, 'formatoadecuado')
+CARPETA_METEO = os.path.join(BASE_DIR, 'datos_meteo')
+#CARPETA_DATOS = '/home/juanpucmm/modelo predectivo/formatoadecuado'
+#CARPETA_METEO = 'datos_meteo'
 
 # ============================================================================
 # CONFIGURACIÓN DE PERÍODOS Y GRUPOS
@@ -618,22 +624,21 @@ class ModeloHibridoAQUARIA:
 # ============================================================================
 
 def cargar_datos_con_meteo(ciudad, carpeta_precip, carpeta_meteo):
-    """Carga datos de precipitación combinados con variables meteorológicas"""
+    # Limpiar el nombre de la ciudad para la búsqueda
+    ciudad_clean = ciudad.lower().replace(" ", "").replace("_", "")
     
-    posibles = [
-        f"{ciudad}_diario_2010_2025.csv",
-        f"{ciudad.replace('_', '')}_diario_2010_2025.csv"
-    ]
-    
+    # Buscar cualquier archivo que contenga el nombre de la ciudad simplificado
     archivo_precip = None
-    for nombre in posibles:
-        ruta = Path(carpeta_precip) / nombre
-        if ruta.exists():
-            archivo_precip = ruta
-            break
+    if os.path.exists(carpeta_precip):
+        for f in os.listdir(carpeta_precip):
+            if ciudad_clean in f.lower().replace(" ", "").replace("_", "") and f.endswith('.csv'):
+                archivo_precip = Path(carpeta_precip) / f
+                break
     
     if archivo_precip is None:
+        print(f"      ⚠️ No se encontró archivo para: {ciudad}")
         return None
+
     
     df_precip = pd.read_csv(archivo_precip, parse_dates=['Fecha'])
     df_precip = df_precip.set_index('Fecha')
