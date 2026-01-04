@@ -29,22 +29,21 @@ def get_supabase_client() -> Client:
 supabase = get_supabase_client()
 
 def get_pg_connection():
-    """Retorna conexión PostgreSQL directa con parámetros de seguridad"""
     try:
         conn = psycopg2.connect(
-            host=os.getenv("PGHOST"),
-            database=os.getenv("PGDATABASE"),
-            user=os.getenv("PGUSER"),
-            password=os.getenv("PGPASSWORD"),
-            port=os.getenv("PGPORT"),
-            # 🔥 ESTO ES VITAL PARA SUPABASE
-            sslmode='require',
-            cursor_factory=RealDictCursor
+            host=st.secrets["PGHOST"],
+            port=st.secrets["PGPORT"],
+            database=st.secrets["PGDATABASE"],
+            user=st.secrets["PGUSER"],
+            password=st.secrets["PGPASSWORD"],
+            sslmode="require",
+            # Añadir esto para evitar que el pooler se confunda
+            options="-c statement_timeout=30000" 
         )
         return conn
     except Exception as e:
-        print(f"❌ Error de conexión física: {e}")
-        raise
+        st.error(f"Error crítico: {e}")
+        return None
 # ==================== FUNCIONES DE PRUEBA ====================
 
 def test_connection():
