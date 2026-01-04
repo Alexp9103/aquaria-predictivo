@@ -11,6 +11,8 @@ from supabase import create_client, Client
 import psycopg2
 from psycopg2.extras import RealDictCursor
 
+import streamlit as st
+
 # Cargar variables de entorno
 load_dotenv()
 
