@@ -42,23 +42,19 @@ supabase = get_supabase_client()
 def get_pg_connection():
     try:
         conn = psycopg2.connect(
-            host=st.secrets["PGHOST"],
-            port=st.secrets["PGPORT"],
-            database=st.secrets["PGDATABASE"],
-            user=st.secrets["PGUSER"],
-            password=st.secrets["PGPASSWORD"],
+            host=get_db_secret("PGHOST"),
+            port=get_db_secret("PGPORT"),
+            database=get_db_secret("PGDATABASE"),
+            user=get_db_secret("PGUSER"),
+            password=get_db_secret("PGPASSWORD"),
             sslmode="require",
-            # Añadir esto para evitar que el pooler se confunda
-            options="-c statement_timeout=30000" 
+            # Añadimos esto para asegurar que no intente usar sentencias preparadas
+            options="-c target_session_attrs=read-write" 
         )
         return conn
     except Exception as e:
-        # Verificamos si st está disponible para mostrar el error en la UI
-        if 'st' in globals() or 'st' in locals():
-            st.error(f"Error crítico de conexión: {e}")
-        else:
-            print(f"Error crítico de conexión: {e}")
-        return None
+        st.error(f"Error de conexión: {e}")
+        return None # Aquí devuelve None, por eso falla el cursor después
 # ==================== FUNCIONES DE PRUEBA ====================
 
 def test_connection():
