@@ -21,6 +21,15 @@ if not os.getenv("PGHOST"):
     print("❌ ALERTA: Las variables de entorno no se cargaron desde el archivo .env")
 # ============================================================================
 
+def get_db_secret(key):
+    """Obtiene variables desde Streamlit Secrets o desde variables de entorno locales"""
+    try:
+        # Intenta primero con Streamlit Secrets (Nube)
+        return st.secrets[key]
+    except:
+        # Si falla, busca en variables de entorno locales (PC)
+        return os.getenv(key)
+        
 def get_supabase_client() -> Client:
     url = os.getenv("SUPABASE_URL")
     key = os.getenv("SUPABASE_KEY")
@@ -44,7 +53,11 @@ def get_pg_connection():
         )
         return conn
     except Exception as e:
-        st.error(f"Error crítico: {e}")
+        # Verificamos si st está disponible para mostrar el error en la UI
+        if 'st' in globals() or 'st' in locals():
+            st.error(f"Error crítico de conexión: {e}")
+        else:
+            print(f"Error crítico de conexión: {e}")
         return None
 # ==================== FUNCIONES DE PRUEBA ====================
 
